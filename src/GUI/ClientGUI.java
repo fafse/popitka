@@ -15,7 +15,6 @@ import java.net.Socket;
 
 public class ClientGUI {
     int port;
-    BufferedWriter writer;
 
     Socket clientSocket;
 
@@ -77,20 +76,17 @@ public class ClientGUI {
         public void actionPerformed(ActionEvent e) {
             try {
                 clientSocket = new Socket(addressField.getText(),port);
-                writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-                chatHandler = new ChatHandler(clientSocket);
+                chatHandler = new ChatHandler(clientSocket, textArea);
                 textField.setEditable(true);
                 addressField.setEditable(false);
             } catch (IOException ex) {
                 reportError("Unavailable to connect. Check address");
                 try {
                     clientSocket.close();
-                    writer.close();
                 } catch (IOException exc) {
                     throw new RuntimeException(exc);
                 }
                 clientSocket=null;
-                writer=null;
                 throw new RuntimeException(ex);
             }
         }
@@ -99,17 +95,14 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = textField.getText();
-            message="one";
-            try {
-                if(message!="") {
-                    writer.write(message);
-                    writer.flush();
+            if(chatHandler==null)
+            {
+                chatHandler=null;
+                clientSocket=null;
+            }else if(message!="") {
+                    chatHandler.sendMessage(message);
                     textField.setText("");
-                    reportError("I sent "+message);
                 }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
         }
     };
 
@@ -173,16 +166,13 @@ public class ClientGUI {
     public int closeAll()
     {
         int success=0;
-        if(writer!=null)
+        if(chatHandler!=null)
         {
             try {
                 System.out.println("I try close");
-                if(writer!=null) {
-                    writer.write("quit");
-                    writer.flush();
-                    writer.close();
+                chatHandler.sendMessage("quit");
+                chatHandler=null;
                     clientSocket.close();
-                }
                 success=1;
             } catch (IOException e) {
                 throw new RuntimeException(e);

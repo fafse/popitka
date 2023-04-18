@@ -16,7 +16,6 @@ public class ClientHandler extends Thread{
             reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isWork=true;
-            sendMessage("ine");
             start();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -29,9 +28,7 @@ public class ClientHandler extends Thread{
         try {
             while (isWork) {
                 try {
-                    System.out.println("i try read");
-                    sendMessage("one");
-                    System.out.println("I sent");
+                    writer.flush();
                     message = reader.readLine();
                     System.out.println(message);
                 } catch (IOException e) {
@@ -39,7 +36,6 @@ public class ClientHandler extends Thread{
                 }
                 if (message.equals("quit")) {
                     isWork = false;
-                    System.out.println("QUIT");
                     break;
                 }
                 sendMessage(message);
@@ -58,7 +54,7 @@ public class ClientHandler extends Thread{
     private void sendMessage(String message)
     {
         try {
-            writer.write(message);
+            writer.write(message+"\n");
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
