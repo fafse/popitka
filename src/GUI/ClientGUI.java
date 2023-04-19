@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.function.BiPredicate;
 
 public class ClientGUI {
     int port;
@@ -24,10 +25,11 @@ public class ClientGUI {
     JTextField nameField;
     JTextField addressField;
     JTextField firstDigitField,secondDigitField;
+    GridLayout actionTable;
     JButton sendButton;
     JButton ConnectButton;
     JButton reset;
-    JButton кнопкаСложения, кнопкаВычитания,кнопкаУмножения, кнопкаДеления, кнопкаШифрования;
+    JButton кнопкаСложения, кнопкаВычитания,кнопкаУмножения, кнопкаДеления, кнопкаШифрования,кнопкаРасшифровки;
 
     JTextField textField; // принимает до 10 символов
 
@@ -154,11 +156,13 @@ public class ClientGUI {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         helpButton = new JButton("Help");
         ConnectButton = new JButton("Соединиться");
+        actionTable = new GridLayout(6,2);
         кнопкаСложения= new JButton("+");
         кнопкаВычитания= new JButton("-");
         кнопкаДеления= new JButton("/");
         кнопкаУмножения= new JButton("*");
         кнопкаШифрования= new JButton("MD5");
+        кнопкаРасшифровки= new JButton("Расшифровка MD5");
         panel = new JPanel(); // панель не видна при выводе
         actionPanel = new JPanel();
         label = new JLabel("Введите текст");
@@ -204,14 +208,20 @@ public class ClientGUI {
         mb.add(ConnectButton);
 
         // Создание панели внизу и добавление компонентов
-
-        actionPanel.add(кнопкаСложения);
-        actionPanel.add(кнопкаВычитания);
-        actionPanel.add(кнопкаДеления);
-        actionPanel.add(кнопкаУмножения);
-        actionPanel.add(кнопкаШифрования);
-        actionPanel.add(firstDigitField);
-        actionPanel.add(secondDigitField,1);
+        GridLayout actionPanelLayout = new GridLayout(2,1,15,15);
+        actionPanel.setLayout(actionPanelLayout);
+        JPanel actionButtons = new JPanel(new GridLayout(2,2,5,5));
+        actionButtons.add(кнопкаСложения);
+        actionButtons.add(кнопкаВычитания);
+        actionButtons.add(кнопкаДеления);
+        actionButtons.add(кнопкаУмножения);
+        JPanel actionTextFields = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        actionTextFields.add(firstDigitField);
+        actionTextFields.add(secondDigitField);
+        actionTextFields.add(кнопкаШифрования);
+        JPanel mD5Panel = new JPanel(new GridLayout());
+        actionPanel.add(actionButtons, BorderLayout.CENTER);
+        actionPanel.add(actionTextFields,BorderLayout.PAGE_START);
 
         panel.add(label); // Компоненты, добавленные с помощью макета Flow Layout
         panel.add(textField);

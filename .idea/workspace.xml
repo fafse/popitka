@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="85215481-19cf-409a-a2ee-6f94ffd7318a" name="Changes" comment="init">
+    <list default="true" id="85215481-19cf-409a-a2ee-6f94ffd7318a" name="Changes" comment="added GUI">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client/ChatHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/ChatHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/ClientGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ClientGUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +53,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="start client" type="Application" factoryName="Application">
+    <configuration name="start client" type="Application" factoryName="Application" singleton="false">
       <option name="MAIN_CLASS_NAME" value="Client.Client" />
       <module name="popitka" />
       <method v="2">
@@ -78,7 +75,7 @@
       <updated>1681766660223</updated>
       <workItem from="1681766661413" duration="4306000" />
       <workItem from="1681820091890" duration="6116000" />
-      <workItem from="1681884529711" duration="5011000" />
+      <workItem from="1681884529711" duration="9628000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1681821920995</created>
@@ -87,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681821920995</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="added GUI">
+      <created>1681889588099</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1681889588099</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -95,6 +99,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="added GUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="added GUI" />
   </component>
 </project>
