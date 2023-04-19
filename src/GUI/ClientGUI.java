@@ -73,7 +73,7 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = "/help";
-            sendMessage(message);
+            sendMessage(message,null);
         }
     };
 
@@ -112,7 +112,9 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message=mD5TextField.getText();
-            sendMessage(message,mD5TextField);
+            System.out.println("one:"+message+":one");
+            if(message!="")
+                sendMessage("/deshmd5"+message,mD5TextField);
         }
     };
 
@@ -145,7 +147,7 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = textField.getText();
-            sendMessage(message);
+            sendMessage(message,textField);
         }
     };
 
@@ -164,11 +166,18 @@ public class ClientGUI {
         ConnectButton = new JButton("Соединиться");
         actionTable = new GridLayout(6,2);
         кнопкаСложения= new JButton("+");
+        кнопкаСложения.addActionListener(actionListenerКнопкиСложения);
         кнопкаВычитания= new JButton("-");
+        кнопкаВычитания.addActionListener(actionListenerКнопкиВычитания);
         кнопкаДеления= new JButton("/");
+        кнопкаДеления.addActionListener(actionListenerКнопкиДеления);
         кнопкаУмножения= new JButton("*");
+        кнопкаУмножения.addActionListener(actionListenerКнопкиУмножения);
         кнопкаШифрования= new JButton("MD5");
+        кнопкаШифрования.addActionListener(actionListenerКнопкиШифрования);
         кнопкаРасшифровки= new JButton("Расшифровка MD5");
+        кнопкаРасшифровки.addActionListener(actionListenerКнопкиРасшифровки);
+
         panel = new JPanel(); // панель не видна при выводе
         actionPanel = new JPanel();
         label = new JLabel("Введите текст");
@@ -281,7 +290,7 @@ public class ClientGUI {
             clientSocket=null;
         }else if(message!="") {
             chatHandler.sendMessage(message);
-            textField.setText("");
+            if(textField!=null) textField.setText("");
         }
     }
 }
