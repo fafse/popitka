@@ -26,6 +26,8 @@ public class ChatHandler extends Thread {
         }
     }
 
+
+
     private void reportError(String message)
     {
         System.out.println(message);
@@ -40,11 +42,18 @@ public class ChatHandler extends Thread {
             try {
                 writer.flush();
                 message = reader.readLine();
+                if(message==null)
+                {
+                    message="Server disconnected";
+                }
                 printToUser(message);
             } catch (IOException e) {
+                reader=null;
+                writer=null;
+                socket=null;
+                setWork(false);
                 throw new RuntimeException(e);
             }
-            System.out.println(message);
         }
     }
 
@@ -55,19 +64,29 @@ public class ChatHandler extends Thread {
     public void sendMessage(String message)
     {
         try {
-            writer.write(message+"\n");
-            writer.flush();
-            if(message.equals("quit"))
-            {
-                reader.close();
+            if (isWork) {
+                writer.write(message + "\n");
                 writer.flush();
-                writer.close();
-                socket.close();
-                setWork(false);
+                if (message.equals("/quit")) {
+                    if (reader != null) reader.close();
+                    if (writer != null) {
+                        writer.flush();
+                        writer.close();
+                    }
+                    if (socket != null) socket.close();
+                    setWork(false);
+                }else
+                {
+                    printToUser(message);
+                }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            else
+            {
+                printToUser("You aren't connected. Please connect to server to send messages");
+            }
+            } catch(IOException e){
+                throw new RuntimeException(e);
+            }
     }
 
     public void setWork(boolean work) {

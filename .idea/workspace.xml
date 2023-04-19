@@ -9,6 +9,7 @@
       <change beforePath="$PROJECT_DIR$/src/Client/ChatHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/ChatHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/ClientGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ClientGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +48,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Server">
+  <component name="RunManager" selected="Application.start client">
     <configuration name="Server" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Server.Server" />
       <module name="popitka" />
@@ -77,6 +78,7 @@
       <updated>1681766660223</updated>
       <workItem from="1681766661413" duration="4306000" />
       <workItem from="1681820091890" duration="6116000" />
+      <workItem from="1681884529711" duration="5011000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1681821920995</created>

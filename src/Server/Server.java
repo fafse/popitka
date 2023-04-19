@@ -7,12 +7,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Server {
-    private static List<ClientHandler> clientList;
+    private static BlockingQueue<ClientHandler> clientList;
 
     public static void main(String[] args) {
-        clientList = new ArrayList<>();
+        clientList = new LinkedBlockingDeque<>();
         ServerSocket serverSocket;
         boolean isWork=false;
         int port = 2023;

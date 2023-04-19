@@ -4,10 +4,7 @@ import Client.ChatHandler;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -15,21 +12,23 @@ import java.net.Socket;
 
 public class ClientGUI {
     int port;
-
     Socket clientSocket;
-
     ChatHandler chatHandler;
     JFrame frame;
     JMenuBar mb;
     JTextArea textArea;
     JButton helpButton;
     JPanel panel; // панель не видна при выводе
+    JPanel actionPanel;
     JLabel label;
     JTextField nameField;
     JTextField addressField;
+    JTextField firstDigitField,secondDigitField;
     JButton sendButton;
     JButton ConnectButton;
     JButton reset;
+    JButton кнопкаСложения, кнопкаВычитания,кнопкаУмножения, кнопкаДеления, кнопкаШифрования;
+
     JTextField textField; // принимает до 10 символов
 
     private WindowListener windowListener = new WindowListener() {
@@ -70,24 +69,67 @@ public class ClientGUI {
 
         }
     };
-    private ActionListener actionListenerHelpButton;
+    private ActionListener actionListenerHelpButton= new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String message = "/help";
+            sendMessage(message);
+        }
+    };
+
+    private ActionListener actionListenerКнопкиСложения = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String messaage;
+        }
+    };
+    private ActionListener actionListenerКнопкиВычитания = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    };
+    private ActionListener actionListenerКнопкиУмножения = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    };
+    private ActionListener actionListenerКнопкиДеления = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    };
+    private ActionListener actionListenerКнопкиШифрования = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    };
+
     private ActionListener actionListenerConnectButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            try {
-                clientSocket = new Socket(addressField.getText(),port);
-                chatHandler = new ChatHandler(clientSocket, textArea);
-                textField.setEditable(true);
-                addressField.setEditable(false);
-            } catch (IOException ex) {
-                reportError("Unavailable to connect. Check address");
+            if(chatHandler==null||!chatHandler.isWork())
                 try {
-                    clientSocket.close();
-                } catch (IOException exc) {
-                    throw new RuntimeException(exc);
+                    textArea.setText("");
+                    clientSocket = new Socket(addressField.getText(),port);
+                    chatHandler = new ChatHandler(clientSocket, textArea);
+                    textField.setEditable(true);
+                } catch (IOException ex) {
+                    reportError("Unavailable to connect. Check address");
+                    try {
+                        if(clientSocket!=null)  clientSocket.close();
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc);
+                    }
+                    clientSocket=null;
+                    throw new RuntimeException(ex);
                 }
-                clientSocket=null;
-                throw new RuntimeException(ex);
+            else
+            {
+                reportError("You are already connected to server.");
             }
         }
     };
@@ -95,14 +137,7 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = textField.getText();
-            if(chatHandler==null)
-            {
-                chatHandler=null;
-                clientSocket=null;
-            }else if(message!="") {
-                    chatHandler.sendMessage(message);
-                    textField.setText("");
-                }
+            sendMessage(message);
         }
     };
 
@@ -119,9 +154,17 @@ public class ClientGUI {
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         helpButton = new JButton("Help");
         ConnectButton = new JButton("Соединиться");
+        кнопкаСложения= new JButton("+");
+        кнопкаВычитания= new JButton("-");
+        кнопкаДеления= new JButton("/");
+        кнопкаУмножения= new JButton("*");
+        кнопкаШифрования= new JButton("MD5");
         panel = new JPanel(); // панель не видна при выводе
+        actionPanel = new JPanel();
         label = new JLabel("Введите текст");
         textField = new JTextField(20); // принимает до 50 символов
+        firstDigitField = new JTextField(5);
+        secondDigitField = new JTextField(5);
         nameField = new JTextField(15);
         nameField.setText("Ник");
         addressField = new JTextField(11);
@@ -130,6 +173,23 @@ public class ClientGUI {
         reset = new JButton("Сброс");
 
         textField.setEditable(false);
+        textField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode()== KeyEvent.VK_ENTER)
+                {
+                    String message = textField.getText();
+                    if(chatHandler==null)
+                    {
+                        chatHandler=null;
+                        clientSocket=null;
+                    }else if(message!="") {
+                        chatHandler.sendMessage(message);
+                        textField.setText("");
+                    }
+                }
+            }
+        });
         helpButton.addActionListener(actionListenerHelpButton);
         ConnectButton.addActionListener(actionListenerConnectButton);
         sendButton.addActionListener(actionListenerSendButton);
@@ -145,16 +205,26 @@ public class ClientGUI {
 
         // Создание панели внизу и добавление компонентов
 
+        actionPanel.add(кнопкаСложения);
+        actionPanel.add(кнопкаВычитания);
+        actionPanel.add(кнопкаДеления);
+        actionPanel.add(кнопкаУмножения);
+        actionPanel.add(кнопкаШифрования);
+        actionPanel.add(firstDigitField);
+        actionPanel.add(secondDigitField,1);
+
         panel.add(label); // Компоненты, добавленные с помощью макета Flow Layout
         panel.add(textField);
         panel.add(sendButton);
         panel.add(reset);
 
         // Добавление компонентов в рамку.
+        frame.getContentPane().add(BorderLayout.EAST, actionPanel);
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.getContentPane().add(BorderLayout.NORTH, mb);
         frame.add(scroll);
         frame.setVisible(true);
+        chatHandler=null;
     }
 
     private void reportError(String message)
@@ -170,8 +240,9 @@ public class ClientGUI {
         {
             try {
                 System.out.println("I try close");
-                chatHandler.sendMessage("quit");
+                if(chatHandler.isWork()) chatHandler.sendMessage("/quit");
                 chatHandler=null;
+                if(clientSocket!=null)
                     clientSocket.close();
                 success=1;
             } catch (IOException e) {
@@ -181,4 +252,15 @@ public class ClientGUI {
         return success;
     }
 
+    private void sendMessage(String message)
+    {
+        if(chatHandler==null)
+        {
+            chatHandler=null;
+            clientSocket=null;
+        }else if(message!="") {
+            chatHandler.sendMessage(message);
+            textField.setText("");
+        }
+    }
 }
