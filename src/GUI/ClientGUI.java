@@ -22,9 +22,7 @@ public class ClientGUI {
     JPanel panel; // панель не видна при выводе
     JPanel actionPanel;
     JLabel label;
-    JTextField nameField;
-    JTextField addressField;
-    JTextField firstDigitField,secondDigitField;
+    JTextField nameField, addressField,firstDigitField,secondDigitField, mD5TextField;
     GridLayout actionTable;
     JButton sendButton;
     JButton ConnectButton;
@@ -110,6 +108,14 @@ public class ClientGUI {
         }
     };
 
+    private ActionListener actionListenerКнопкиРасшифровки = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String message=mD5TextField.getText();
+            sendMessage(message,mD5TextField);
+        }
+    };
+
     private ActionListener actionListenerConnectButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -167,6 +173,7 @@ public class ClientGUI {
         actionPanel = new JPanel();
         label = new JLabel("Введите текст");
         textField = new JTextField(20); // принимает до 50 символов
+        mD5TextField = new JTextField(30);
         firstDigitField = new JTextField(5);
         secondDigitField = new JTextField(5);
         nameField = new JTextField(15);
@@ -200,7 +207,7 @@ public class ClientGUI {
 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(windowListener);
-        frame.setSize(600, 600);
+        frame.setSize(900, 600);
 
         mb.add(helpButton);
         mb.add(nameField);
@@ -208,7 +215,7 @@ public class ClientGUI {
         mb.add(ConnectButton);
 
         // Создание панели внизу и добавление компонентов
-        GridLayout actionPanelLayout = new GridLayout(2,1,15,15);
+        GridLayout actionPanelLayout = new GridLayout(3,1,5,5);
         actionPanel.setLayout(actionPanelLayout);
         JPanel actionButtons = new JPanel(new GridLayout(2,2,5,5));
         actionButtons.add(кнопкаСложения);
@@ -218,9 +225,13 @@ public class ClientGUI {
         JPanel actionTextFields = new JPanel(new FlowLayout(FlowLayout.CENTER));
         actionTextFields.add(firstDigitField);
         actionTextFields.add(secondDigitField);
-        actionTextFields.add(кнопкаШифрования);
-        JPanel mD5Panel = new JPanel(new GridLayout());
-        actionPanel.add(actionButtons, BorderLayout.CENTER);
+        JPanel mD5Panel = new JPanel(new GridLayout(3,1,5,5));
+        mD5Panel.add(кнопкаШифрования);
+        mD5Panel.add(кнопкаРасшифровки);
+        mD5TextField.setSize(50,10);
+        mD5Panel.add(mD5TextField);
+        actionPanel.add(mD5Panel,BorderLayout.CENTER);
+        actionPanel.add(actionButtons, BorderLayout.PAGE_END);
         actionPanel.add(actionTextFields,BorderLayout.PAGE_START);
 
         panel.add(label); // Компоненты, добавленные с помощью макета Flow Layout
@@ -262,7 +273,7 @@ public class ClientGUI {
         return success;
     }
 
-    private void sendMessage(String message)
+    private void sendMessage(String message, JTextField textField)
     {
         if(chatHandler==null)
         {
