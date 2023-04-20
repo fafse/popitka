@@ -22,7 +22,7 @@ public class MD5Hasher implements Runnable{
     public void run() {
         for (long i = begin; i <= end && !is_password_found; i++) {
             String password = createPassword(i).toString();
-            if (Server.hashPassword(password).equals(hex_password)) {
+            if (ClientHandler.hashPassword(password).equals(hex_password)) {
             is_password_found = true;
               foundPassword=password;
             }

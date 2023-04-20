@@ -330,7 +330,7 @@ public class ClientGUI {
             chatHandler=null;
             clientSocket=null;
         }else if(message!="") {
-            chatHandler.sendMessage(message,true);
+            chatHandler.sendMessage(message,false);
             for(int i = 0;i<textFields.length;i++)
                 if(textField!=null) textField.setText("");
         }

@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85215481-19cf-409a-a2ee-6f94ffd7318a" name="Changes" comment="added GUI">
-      <change afterPath="$PROJECT_DIR$/src/Server/MD5Hasher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Client/ChatHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/ChatHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/ClientGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ClientGUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/ClientHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Server/MD5Hasher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/MD5Hasher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/Server.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -49,7 +48,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.start client">
+  <component name="RunManager" selected="Application.Server">
     <configuration name="Server" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Server.Server" />
       <module name="popitka" />
@@ -81,7 +80,8 @@
       <workItem from="1681820091890" duration="6116000" />
       <workItem from="1681884529711" duration="10768000" />
       <workItem from="1681930521699" duration="1188000" />
-      <workItem from="1681979822711" duration="1799000" />
+      <workItem from="1681979822711" duration="2027000" />
+      <workItem from="1681991659185" duration="2513000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <created>1681821920995</created>
@@ -111,7 +111,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681912546194</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added GUI">
+      <created>1681981854116</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1681981854116</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

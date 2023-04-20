@@ -2,7 +2,11 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ClientHandler extends Thread{
     private Socket socket;
@@ -24,7 +28,54 @@ public class ClientHandler extends Thread{
             throw new RuntimeException(e);
         }
     }
+    private static final char[] HEX_DIGITS = "0123456789ABCDEF".toCharArray();
+    public static String[] elements = {"qwertyuiopasdfghjklzxcvbnm"};
+    private static String toHexString(byte[] bytes) {
+        StringBuilder hex = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            hex.append(HEX_DIGITS[(b & 0xff) >> 4]);
+            hex.append(HEX_DIGITS[b & 0x0f]);
+        }
+        return hex.toString();
+    }
+    static String hashPassword(String password) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        digest.update(password.getBytes());
+        byte[] bytes = digest.digest();
+        return toHexString(bytes);
+    }
 
+    public String findMD5(String hex_password, int numThreads)
+    {
+        if(numThreads<0||numThreads>100)
+            numThreads=100;
+        int numPassword= (int) Math.pow(26,7);
+        Thread[] threads = new Thread[numThreads];
+        long t0 = System.nanoTime();
+        for(int i = 0;i<numThreads;i++)
+        {
+            threads[i] = new Thread(new MD5Hasher((long)numPassword*(i)/numThreads,(long)numPassword*(i+1)/numThreads,hex_password));
+            threads[i].start();
+        }
+        for(int i = 0;i<numThreads;i++)
+        {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        long t = System.nanoTime()-t0;
+        sendMessage(t/1e9 +" Seconds required to solve this problem");
+        String password=MD5Hasher.getFoundPassword();
+        MD5Hasher.makeDefault();
+        return password;
+    }
     public static String[] getRules() {
         String[] rules = new String[10];
 
@@ -41,6 +92,58 @@ public class ClientHandler extends Thread{
         rules[9] = "===================================================";
         return rules;
     }
+
+    private void commandHandler(String command)
+    {
+        String[] commandParts = command.split(String.valueOf(' '));
+        if(commandParts.length==2&&commandParts[0].charAt(0)=='/')
+        {
+            if(commandParts[0].equals("/md5"))
+            {
+                sendMessage(hashPassword(commandParts[1]));
+            } else if (commandParts[0].equals("/deshmd5")) {
+                if(commandParts[1].length()!=32) {
+                    sendMessage("Hash must be a 32 character hex string");
+                    return;
+                }
+                sendMessage("Decoding md5...Please don't send me smth till the process end");
+                sendMessage(findMD5(commandParts[1],100));
+            }else
+            {
+                sendMessage("Unavailable to solve your command. Please check data");
+            }
+        } else if (commandParts.length==3) {
+            switch (commandParts[0])
+            {
+                case "/addition":
+                {
+                    sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) + Integer.valueOf(commandParts[2])));
+                    break;
+                }
+                case "/subtraction":
+                {
+                    sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) - Integer.valueOf(commandParts[2])));
+                    break;
+                }
+                case "/multiplication":
+                {
+                    sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) * Integer.valueOf(commandParts[2])));
+                    break;
+                }
+                case "/division":
+                {
+                    sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) / Integer.valueOf(commandParts[2])));
+                    break;
+                }
+                default:
+                {
+                    sendMessage("Unavailable to solve your command. Please check data");
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public void run()
     {
@@ -51,6 +154,7 @@ public class ClientHandler extends Thread{
                     writer.flush();
                     message = reader.readLine();
                     System.out.println(message);
+                    commandHandler(message);
                 } catch (IOException e) {
                     isWork=false;
                     throw new RuntimeException(e);
