@@ -9,9 +9,10 @@ public class ChatHandler extends Thread {
     BufferedReader reader ;
     BufferedWriter writer;
     volatile boolean isWork=false;
+    private String name;
     JTextArea jTextArea;
 
-    public ChatHandler(Socket serverSocket, JTextArea jTextArea)
+    public ChatHandler(Socket serverSocket, JTextArea jTextArea,String name)
     {
         this.socket=serverSocket;
         try {
@@ -19,6 +20,8 @@ public class ChatHandler extends Thread {
             reader= new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isWork=true;
+            this.name = name;
+            sendMessage(name,false);
             start();
         } catch (IOException e) {
             reportError(e.getMessage());
@@ -52,7 +55,6 @@ public class ChatHandler extends Thread {
                 writer=null;
                 socket=null;
                 setWork(false);
-                throw new RuntimeException(e);
             }
         }
     }
@@ -61,7 +63,7 @@ public class ChatHandler extends Thread {
         return isWork;
     }
 
-    public void sendMessage(String message)
+    public void sendMessage(String message,boolean writeToUser)
     {
         try {
             if (isWork) {
@@ -77,7 +79,7 @@ public class ChatHandler extends Thread {
                     setWork(false);
                 }else
                 {
-                    printToUser(message);
+                    if(writeToUser) printToUser(message);
                 }
             }
             else

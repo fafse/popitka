@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 public class ClientHandler extends Thread{
     private Socket socket;
+    private String name;
     private BufferedWriter writer;
     private BufferedReader reader;
     boolean isWork = false;
@@ -17,6 +18,7 @@ public class ClientHandler extends Thread{
             reader=new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isWork=true;
+            name=reader.readLine();
             start();
         } catch (IOException e) {
             throw new RuntimeException(e);

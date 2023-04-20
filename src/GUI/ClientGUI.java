@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 
 public class ClientGUI {
@@ -80,31 +81,64 @@ public class ClientGUI {
     private ActionListener actionListenerКнопкиСложения = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String messaage;
+            String message = "/addition ",firstField,secondField;
+            firstField= firstDigitField.getText();
+            secondField= secondDigitField.getText();
+            JTextField textFields[] = new JTextField[2];
+            textFields[0]=firstDigitField;
+            textFields[1]=secondDigitField;
+            if (!Objects.equals(firstField, "") && !Objects.equals(secondField, ""))
+                sendMessage(message+firstField+" "+secondField,textFields);
         }
     };
     private ActionListener actionListenerКнопкиВычитания = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            String message = "/subtraction ",firstField,secondField;
+            firstField= firstDigitField.getText();
+            secondField= secondDigitField.getText();
+            JTextField textFields[] = new JTextField[2];
+            textFields[0]=firstDigitField;
+            textFields[1]=secondDigitField;
+            if (!Objects.equals(firstField, "") && !Objects.equals(secondField, ""))
+                sendMessage(message+firstField+" "+secondField,textFields);
 
         }
     };
     private ActionListener actionListenerКнопкиУмножения = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            String message = "/multiplication ",firstField,secondField;
+            firstField= firstDigitField.getText();
+            secondField= secondDigitField.getText();
+            JTextField textFields[] = new JTextField[2];
+            textFields[0]=firstDigitField;
+            textFields[1]=secondDigitField;
+            if (!Objects.equals(firstField, "") && !Objects.equals(secondField, ""))
+                sendMessage(message+firstField+" "+secondField,textFields);
         }
     };
     private ActionListener actionListenerКнопкиДеления = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            String message = "/division ",firstField,secondField;
+            firstField= firstDigitField.getText();
+            secondField= secondDigitField.getText();
+            JTextField textFields[] = new JTextField[2];
+            textFields[0]=firstDigitField;
+            textFields[1]=secondDigitField;
+            if (!Objects.equals(firstField, "") && !Objects.equals(secondField, ""))
+                sendMessage(message+firstField+" "+secondField,textFields);
         }
     };
     private ActionListener actionListenerКнопкиШифрования = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            String message=mD5TextField.getText();
+            JTextField textFields[] = new JTextField[1];
+            textFields[0]=mD5TextField;
+            if(!message.equals(""))
+                sendMessage("/md5 "+message,textFields);
         }
     };
 
@@ -112,21 +146,26 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message=mD5TextField.getText();
-            System.out.println("one:"+message+":one");
-            if(message!="")
-                sendMessage("/deshmd5"+message,mD5TextField);
+            JTextField textFields[] = new JTextField[1];
+            textFields[0]=mD5TextField;
+            if(!message.equals(""))
+                sendMessage("/deshmd5 "+message,textFields);
         }
     };
 
     private ActionListener actionListenerConnectButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            String name;
             if(chatHandler==null||!chatHandler.isWork())
                 try {
-                    textArea.setText("");
-                    clientSocket = new Socket(addressField.getText(),port);
-                    chatHandler = new ChatHandler(clientSocket, textArea);
-                    textField.setEditable(true);
+                    name=nameField.getText();
+                    if(name!="") {
+                        textArea.setText("");
+                        clientSocket = new Socket(addressField.getText(), port);
+                        chatHandler = new ChatHandler(clientSocket, textArea, name);
+                        textField.setEditable(true);
+                    }
                 } catch (IOException ex) {
                     reportError("Unavailable to connect. Check address");
                     try {
@@ -147,7 +186,9 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = textField.getText();
-            sendMessage(message,textField);
+            JTextField textFields[] = new JTextField[1];
+            textFields[1]=textField;
+            sendMessage(message,textFields);
         }
     };
 
@@ -204,7 +245,7 @@ public class ClientGUI {
                         chatHandler=null;
                         clientSocket=null;
                     }else if(message!="") {
-                        chatHandler.sendMessage(message);
+                        chatHandler.sendMessage(message,true);
                         textField.setText("");
                     }
                 }
@@ -270,7 +311,7 @@ public class ClientGUI {
         {
             try {
                 System.out.println("I try close");
-                if(chatHandler.isWork()) chatHandler.sendMessage("/quit");
+                if(chatHandler.isWork()) chatHandler.sendMessage("/quit",false);
                 chatHandler=null;
                 if(clientSocket!=null)
                     clientSocket.close();
@@ -282,15 +323,16 @@ public class ClientGUI {
         return success;
     }
 
-    private void sendMessage(String message, JTextField textField)
+    private void sendMessage(String message, JTextField[] textFields)
     {
         if(chatHandler==null)
         {
             chatHandler=null;
             clientSocket=null;
         }else if(message!="") {
-            chatHandler.sendMessage(message);
-            if(textField!=null) textField.setText("");
+            chatHandler.sendMessage(message,true);
+            for(int i = 0;i<textFields.length;i++)
+                if(textField!=null) textField.setText("");
         }
     }
 }
