@@ -15,9 +15,26 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class Server {
     private static BlockingQueue<ClientHandler> clientList;
 
+    public static BlockingQueue<ClientHandler> getClientList() {
+        return clientList;
+    }
+
     private static void reportError(String message)
     {
         System.out.println(message);
+    }
+
+    public static void deleteUnavailableUsers()
+    {
+        if(getClientList()!=null) {
+            BlockingQueue<ClientHandler> clientAvailableList = getClientList();
+            for (ClientHandler client :
+                    getClientList()) {
+                if (!client.isWork)
+                    getClientList().remove(client);
+            }
+            clientList = clientAvailableList;
+        }
     }
 
     public static void main(String[] args) {

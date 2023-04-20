@@ -186,9 +186,14 @@ public class ClientGUI {
         @Override
         public void actionPerformed(ActionEvent e) {
             String message = textField.getText();
-            JTextField textFields[] = new JTextField[1];
-            textFields[1]=textField;
-            sendMessage(message,textFields);
+            if(chatHandler==null)
+            {
+                chatHandler=null;
+                clientSocket=null;
+            }else if(message!="") {
+                chatHandler.sendMessage(message,true);
+                textField.setText("");
+            }
         }
     };
 
@@ -231,7 +236,13 @@ public class ClientGUI {
         addressField = new JTextField(11);
         addressField.setText("localhost");
         sendButton = new JButton("Отправить");
-        reset = new JButton("Сброс");
+        reset = new JButton("Отсоединиться");
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                closeAll();
+            }
+        });
 
         textField.setEditable(false);
         textField.addKeyListener(new KeyAdapter() {
@@ -310,7 +321,6 @@ public class ClientGUI {
         if(chatHandler!=null)
         {
             try {
-                System.out.println("I try close");
                 if(chatHandler.isWork()) chatHandler.sendMessage("/quit",false);
                 chatHandler=null;
                 if(clientSocket!=null)
@@ -331,6 +341,7 @@ public class ClientGUI {
             clientSocket=null;
         }else if(message!="") {
             chatHandler.sendMessage(message,false);
+            if(textField!=null)
             for(int i = 0;i<textFields.length;i++)
                 if(textField!=null) textField.setText("");
         }

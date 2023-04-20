@@ -23,6 +23,7 @@ public class ClientHandler extends Thread{
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isWork=true;
             name=reader.readLine();
+            sendAll("connected");
             start();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -95,13 +96,16 @@ public class ClientHandler extends Thread{
 
     private void commandHandler(String command)
     {
+        boolean isCommand = false;
         String[] commandParts = command.split(String.valueOf(' '));
         if(commandParts.length==2&&commandParts[0].charAt(0)=='/')
         {
             if(commandParts[0].equals("/md5"))
             {
+                isCommand=true;
                 sendMessage(hashPassword(commandParts[1]));
             } else if (commandParts[0].equals("/deshmd5")) {
+                isCommand=true;
                 if(commandParts[1].length()!=32) {
                     sendMessage("Hash must be a 32 character hex string");
                     return;
@@ -117,31 +121,40 @@ public class ClientHandler extends Thread{
             {
                 case "/addition":
                 {
+                    isCommand=true;
                     sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) + Integer.valueOf(commandParts[2])));
                     break;
                 }
                 case "/subtraction":
                 {
+                    isCommand=true;
                     sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) - Integer.valueOf(commandParts[2])));
                     break;
                 }
                 case "/multiplication":
                 {
+                    isCommand=true;
                     sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) * Integer.valueOf(commandParts[2])));
                     break;
                 }
                 case "/division":
                 {
+                    isCommand=true;
                     sendMessage(String.valueOf(Integer.valueOf(commandParts[1]) / Integer.valueOf(commandParts[2])));
                     break;
                 }
+
                 default:
                 {
                     sendMessage("Unavailable to solve your command. Please check data");
                     break;
                 }
             }
+        }else if(command.equals("/quit"))
+        {
+            isCommand=true;
         }
+        if(!isCommand) sendAll(command);
     }
 
     @Override
@@ -153,7 +166,7 @@ public class ClientHandler extends Thread{
                 try {
                     writer.flush();
                     message = reader.readLine();
-                    System.out.println(message);
+                    System.out.println(name+">:"+message);
                     commandHandler(message);
                 } catch (IOException e) {
                     isWork=false;
@@ -170,10 +183,11 @@ public class ClientHandler extends Thread{
             }
         }finally {
             try {
+                sendAll("disconnected");
                 reader.close();
                 writer.close();
                 socket.close();
-                System.out.println("CLOSED");
+                System.out.println(name+" disconnected");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -186,6 +200,26 @@ public class ClientHandler extends Thread{
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    private void sendAll(String message)
+    {
+        Server.deleteUnavailableUsers();
+        String messageToAll;
+        if(message.equals("disconnected"))
+        {
+            messageToAll=name+" disconnected...";
+        }else if(message.equals("connected"))
+        {
+            messageToAll=name+" connected";
+        }else
+        {
+            messageToAll=name+">:"+message;
+        }
+        for (ClientHandler client:
+             Server.getClientList()) {
+            if(!client.equals(this))
+                client.sendMessage(messageToAll);
         }
     }
 }
