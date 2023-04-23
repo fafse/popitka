@@ -1,5 +1,8 @@
 package Server;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,6 +16,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Server {
+    static JFrame frame;
+    static JTextArea textArea;
+    static volatile boolean isWork=false;
     private static BlockingQueue<ClientHandler> clientList;
 
     public static BlockingQueue<ClientHandler> getClientList() {
@@ -21,7 +27,7 @@ public class Server {
 
     private static void reportError(String message)
     {
-        System.out.println(message);
+        textArea.append(message+"\n");
     }
 
     public static void deleteUnavailableUsers()
@@ -36,11 +42,65 @@ public class Server {
             clientList = clientAvailableList;
         }
     }
+    private static WindowListener windowListener = new WindowListener() {
+        @Override
+        public void windowOpened(WindowEvent e) {
+
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            isWork=false;
+            deleteUnavailableUsers();
+            for (ClientHandler client:
+                 clientList) {
+                client.sendMessage("/quit");
+                client.isWork=false;
+            }
+            deleteUnavailableUsers();
+            e.getWindow().setVisible(false);
+            System.exit(0);
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+
+        }
+
+        @Override
+        public void windowIconified(WindowEvent e) {
+
+        }
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+
+        }
+    };
 
     public static void main(String[] args) {
+        frame = new JFrame("Курсач");
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        JScrollPane scroll = new JScrollPane(textArea,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setSize(900, 600);
+        frame.add(scroll);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(windowListener);
+        frame.setVisible(true);
         clientList = new LinkedBlockingDeque<>();
         ServerSocket serverSocket;
-        boolean isWork=false;
         int port = 2023;
         try {
             serverSocket = new ServerSocket(port);

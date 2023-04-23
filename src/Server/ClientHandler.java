@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +25,9 @@ public class ClientHandler extends Thread{
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             isWork=true;
             name=reader.readLine();
+            Date date = new Date();
+            SimpleDateFormat formatForDateNow = new SimpleDateFormat("hh:mm:ss a zzz");
+            Server.textArea.append("["+formatForDateNow.format(date)+"]\n"+name+" connected\n");
             sendAll("connected");
             start();
         } catch (IOException e) {
@@ -78,19 +83,24 @@ public class ClientHandler extends Thread{
         return password;
     }
     public static String[] getRules() {
-        String[] rules = new String[10];
+        String[] rules = new String[3];
 
-        rules[0] = "Commands:";
+        rules[0] = "Инструкция:";
         rules[1] = "===================================================";
-        rules[2] = "1. add\nExample of using:\nadd 5 3\nServer will answer:8";
-        rules[3] = "2. subtract\nExample of using:\nsubtract 5 3\nServer will answer:2";
-        rules[4] = "3. multiply\nExample of using:\nmultiply 5 3\nServer will answer:15";
-        rules[5] = "4. divide\nExample of using:\ndivide 6 3\nServer will answer:2";
-        rules[6] = "5. MD5\n Example of using:\nMD5 torules\nServer will answer:";
-        rules[7] = "6. DeshMD5\nExample of using:\nDeshMd5 39D89CD686B43C82A7509A638A4AB6DD 100\nServer will answer:rulesss\nATTENTION:\n" +
-                "This command is available for 7 letter message(in decrypted form)";
-        rules[8] = "7. help\nExample of using:\nhelp\nServer will write this note.";
-        rules[9] = "===================================================";
+        rules[2] = "На верхней панели располагаются кнопка Помощь, которая вызывает данное меню\n" +
+                "Поле для ввода имени пользователя, поле для ввода адреса, и кнопка Соединиться.\n" +
+                "Слева расположен чат, где будут выводиться ваши и чужие сообщения, а также ответы от сервера\n" +
+                "на ваши запросы.\n" +
+                "Справа представлены кнопки для шифровки и расшифровки MD5.\n" +
+                "Для того, чтобы воспользоваться этим необходимо в поле под кнопкой Расшифровка MD5 текст,\n" +
+                "нужный для шифровки/расшифровки.\n" +
+                "Ниже этого поля расположены кнопки с арифметическими операциями.\n" +
+                "Для того, чтобы воспользоваться ими необходимо в полях, расположеными под\n" +
+                "кнопками арифметических операций ввести числа.\n" +
+                "В нижней панели расположено поле для отправки сообщений другим участникам чата,\n" +
+                "Кнопки Отправить, служащая дла отправки сообщения из поля, расположенного слева от этой кнопки,\n" +
+                "а также кнопка Отсоединиться, нужная дла того, чтобы отсоединиться от текущего сервера\n" +
+                "===================================================\n";
         return rules;
     }
 
@@ -166,7 +176,9 @@ public class ClientHandler extends Thread{
                 try {
                     writer.flush();
                     message = reader.readLine();
-                    System.out.println(name+">:"+message);
+                    Date date = new Date();
+                    SimpleDateFormat formatForDateNow = new SimpleDateFormat("hh:mm:ss a zzz");
+                    Server.textArea.append("["+formatForDateNow.format(date)+"]\n"+name+">:"+message+"\n");
                     commandHandler(message);
                 } catch (IOException e) {
                     isWork=false;
@@ -187,16 +199,20 @@ public class ClientHandler extends Thread{
                 reader.close();
                 writer.close();
                 socket.close();
-                System.out.println(name+" disconnected");
+                Date date = new Date();
+                SimpleDateFormat formatForDateNow = new SimpleDateFormat("hh:mm:ss a zzz");
+                Server.textArea.append("["+formatForDateNow.format(date)+"]\n"+name+" disconnected");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    private void sendMessage(String message)
+    public void sendMessage(String message)
     {
+        Date date = new Date();
+        SimpleDateFormat formatForDateNow = new SimpleDateFormat("hh:mm:ss a zzz");
         try {
-            writer.write(message+"\n");
+            writer.write("["+formatForDateNow.format(date)+"]\n"+message+"\n");
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);

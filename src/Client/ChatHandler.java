@@ -48,6 +48,10 @@ public class ChatHandler extends Thread {
                 if(message==null)
                 {
                     message="Server disconnected";
+                    isWork=false;
+                } else if (message.equals("/quit")) {
+                    message="Server disconnected";
+                    isWork=false;
                 }
                 printToUser(message);
             } catch (IOException e) {

@@ -202,13 +202,13 @@ public class ClientGUI {
     }
 
     public void startGUI() {
-        frame = new JFrame("Chat");
+        frame = new JFrame("Курсач");
         mb = new JMenuBar();
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(textArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        helpButton = new JButton("Help");
+        helpButton = new JButton("Помощь");
         ConnectButton = new JButton("Соединиться");
         actionTable = new GridLayout(6,2);
         кнопкаСложения= new JButton("+");
@@ -240,7 +240,19 @@ public class ClientGUI {
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                closeAll();
+                if(chatHandler!=null||chatHandler.isWork()) {
+                    chatHandler.sendMessage("/quit", false);
+                    try {
+                        if (clientSocket != null) clientSocket.close();
+                    } catch (IOException exc) {
+                        throw new RuntimeException(exc);
+                    }
+                    clientSocket = null;
+                }
+                else
+                {
+                    reportError("You are already connected to server.");
+                }
             }
         });
 
@@ -255,7 +267,7 @@ public class ClientGUI {
                     {
                         chatHandler=null;
                         clientSocket=null;
-                    }else if(message!="") {
+                    }else if(message!=null&&message!="") {
                         chatHandler.sendMessage(message,true);
                         textField.setText("");
                     }
@@ -341,7 +353,7 @@ public class ClientGUI {
             clientSocket=null;
         }else if(message!="") {
             chatHandler.sendMessage(message,false);
-            if(textField!=null)
+            if(textFields!=null)
             for(int i = 0;i<textFields.length;i++)
                 if(textField!=null) textField.setText("");
         }
