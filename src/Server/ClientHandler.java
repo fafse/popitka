@@ -84,7 +84,6 @@ public class ClientHandler extends Thread{
     }
     public static String[] getRules() {
         String[] rules = new String[3];
-
         rules[0] = "Инструкция:";
         rules[1] = "===================================================";
         rules[2] = "На верхней панели располагаются кнопка Помощь, которая вызывает данное меню\n" +

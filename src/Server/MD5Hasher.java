@@ -43,6 +43,8 @@ public class MD5Hasher implements Runnable{
         for (int i = 0; i < 7; i++) {
             password += (char) ('a' + passwordInt[i]);
         }
+
+        //Server.textArea.append(password+"\n");
         return password;
     }
 }

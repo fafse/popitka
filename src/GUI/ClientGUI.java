@@ -202,7 +202,7 @@ public class ClientGUI {
     }
 
     public void startGUI() {
-        frame = new JFrame("Курсач");
+        frame = new JFrame("Клиент");
         mb = new JMenuBar();
         textArea = new JTextArea();
         textArea.setEditable(false);

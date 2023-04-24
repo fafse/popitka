@@ -88,7 +88,7 @@ public class Server {
     };
 
     public static void main(String[] args) {
-        frame = new JFrame("Курсач");
+        frame = new JFrame("Сервер");
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scroll = new JScrollPane(textArea,
